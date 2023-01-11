@@ -6,16 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.pokedex.data.models.Pokemon
 
+
 @Database(entities = [Pokemon::class], version = 1)
 abstract class PokedexDatabase: RoomDatabase() {
     abstract fun pokedexDao(): PokedexDao
 
-    companion object {
-        @Volatile
-        var INSTANCE: PokedexDatabase? = null
-
-        fun getDatabase(context: Context): PokedexDatabase {
-            return INSTANCE ?: Room.databaseBuilder(context, PokedexDatabase::class.java, "pokedex_database")
-                .fallbackToDestructiveMigration().build()        }
-    }
 }
