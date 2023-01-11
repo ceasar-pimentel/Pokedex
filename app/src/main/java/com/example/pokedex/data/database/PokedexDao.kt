@@ -1,9 +1,10 @@
-package com.example.pokedex.data.local
+package com.example.pokedex.data.database
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.pokedex.data.models.Pokemon
 import kotlinx.coroutines.flow.Flow
 
 @Dao
