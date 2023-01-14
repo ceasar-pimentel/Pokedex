@@ -1,13 +1,11 @@
 package com.example.pokedex.data.database
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.pokedex.data.models.Pokemon
+import com.example.pokedex.data.database.models.PokedexPokemon
 
 
-@Database(entities = [Pokemon::class], version = 1)
+@Database(entities = [PokedexPokemon::class], version = 1)
 abstract class PokedexDatabase: RoomDatabase() {
     abstract fun pokedexDao(): PokedexDao
 
