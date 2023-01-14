@@ -4,23 +4,29 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.pokedex.data.database.models.Pokedex
+import com.example.pokedex.data.database.models.PokedexEntry
 import com.example.pokedex.data.database.models.PokedexPokemon
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PokedexDao {
     @Query("SELECT * FROM POKEDEX")
-    fun getPokemonList(): Flow<List<Pokedex>>
+    fun getPokedexPokemonList(): Flow<List<PokedexEntry>>
 
     @Query("SELECT * from Pokemon")
-    fun getAll(): Flow<List<PokedexPokemon>>
+    fun getAllPokemon(): Flow<List<PokedexPokemon>>
 
     @Query("SELECT * FROM Pokemon WHERE id = :id")
-    fun getPokemonById(id: Int)
+    fun getPokemonById(id: Int) : PokedexPokemon?
+
+    @Query("SELECT * FROM Pokemon WHERE name = :name")
+    fun getPokemonByName(name: String) : PokedexPokemon?
 
     @Insert()
-    suspend fun insertAll(pokemon: List<PokedexPokemon>)
+    suspend fun insertAllPokemon(pokemon: List<PokedexPokemon>)
+
+    @Insert()
+    suspend fun insertAllPokedexEntries(pokedex: List<PokedexEntry>)
 
     @Insert()
     suspend fun insertPokemon(pokemon: PokedexPokemon)

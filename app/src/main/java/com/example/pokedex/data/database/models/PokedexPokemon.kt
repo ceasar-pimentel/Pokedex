@@ -7,4 +7,9 @@ import kotlinx.serialization.Serializable
 data class PokedexPokemon(
     val id: Int,
     val name: String,
-    val frontDefaultSprite: String)
+    val frontDefaultSprite: String,
+    val height: Int,
+    val weight: Int,
+    val baseExperience: Int,
+
+)
