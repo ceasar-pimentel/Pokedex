@@ -1,4 +1,6 @@
 package com.example.pokedex.ui
 
-class PokedexDetailsViewModel {
+import androidx.lifecycle.ViewModel
+
+class PokedexDetailsViewModel : ViewModel() {
 }
