@@ -7,6 +7,7 @@ import com.example.pokedex.data.network.PokedexApiService
 import com.example.pokedex.util.Response
 import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 @ActivityScoped
@@ -15,21 +16,28 @@ class RepositoryImpl @Inject constructor(
     private val pokedexDao: PokedexDao
 ) : Repository {
 
-    // this is how the google code lab implements this with live data.
-    // I'm not quite sure if there is a better way
-    override val pokedexList: Flow<List<PokedexEntry>>
-        get() = pokedexDao.getPokedexPokemonList()
 
-    override suspend fun getPokemonList(limit: Int, offset: Int): Response<List<PokedexEntry>> {
+    // list is exposed with val pokemonList. new pokemon will be loaded here.
+    override suspend fun getPokemonList(page: Int, pageSize: Int): Response<List<PokedexEntry>> {
         return try {
-            val pokedexResults: List<PokedexEntry> =
-                pokedexApi.getPokemons(limit, offset).results.map {
-                    it.toPokedex()
-                }
+            val start  = page*pageSize
+            val end = page*pageSize + pageSize
 
-            pokedexDao.insertAllPokedexEntries(pokedexResults)
-            Response.Success()
+            var pokedexList = pokedexDao.getPokedexList(start, end)
 
+            // if not in cache query from the interwebs
+            if(pokedexList.isEmpty()) {
+                val pokedexResults: List<PokedexEntry> =
+                    pokedexApi.getPokemons(limit = pageSize, offset =page*pageSize).results.map {
+                        it.toPokedex()
+                    }
+                pokedexDao.insertAllPokedexEntries(pokedexResults)
+            }
+
+            // query from db again. doing this to make sure that if the insert had an error
+            // that would throw an exception before it got to this point.
+            pokedexList = pokedexDao.getPokedexList(start, end)
+            Response.Success(pokedexList)
         } catch (e: Exception) {
             Response.Error(message = e.message ?: "unknown exception occurred")
         }

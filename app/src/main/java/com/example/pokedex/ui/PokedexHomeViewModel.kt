@@ -8,9 +8,13 @@ import androidx.lifecycle.ViewModel
 import com.example.pokedex.data.Repository
 import com.example.pokedex.data.network.responses.Pokemon
 import dagger.hilt.android.lifecycle.HiltViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class PokedexHomeViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
+    init {
+        Timber.d("PokedexHomeViewModel created")
+    }
 }

@@ -10,16 +10,16 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PokedexDao {
-    @Query("SELECT * FROM POKEDEX")
-    fun getPokedexPokemonList(): Flow<List<PokedexEntry>>
+    @Query("SELECT * FROM pokedex  WHERE id >= :start AND id <= :end")
+    fun getPokedexList(start: Int, end: Int): List<PokedexEntry>
 
-    @Query("SELECT * from Pokemon")
-    fun getAllPokemon(): Flow<List<PokedexPokemon>>
+    @Query("SELECT * FROM pokemon WHERE id >= :start AND id <= :end")
+    fun getPokemon(start: Int, end: Int): Flow<List<PokedexPokemon>>
 
-    @Query("SELECT * FROM Pokemon WHERE id = :id")
+    @Query("SELECT * FROM pokemon WHERE id = :id")
     fun getPokemonById(id: Int) : PokedexPokemon?
 
-    @Query("SELECT * FROM Pokemon WHERE name = :name")
+    @Query("SELECT * FROM pokemon WHERE name = :name")
     fun getPokemonByName(name: String) : PokedexPokemon?
 
     @Insert()
