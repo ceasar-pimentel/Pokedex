@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,7 +19,7 @@ fun PokedexApp(modifier: Modifier = Modifier) {
             startDestination = PokedexRoutes.HomeScreen.name
         ) {
             composable(route = PokedexRoutes.HomeScreen.name) {
-                PokedexHomeScreen()
+                PokedexHomeScreen(viewModel = hiltViewModel())
             }
             composable(route = PokedexRoutes.DetailsScreen.name) {
                 PokedexDetailsScreen()
