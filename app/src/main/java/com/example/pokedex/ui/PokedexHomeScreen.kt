@@ -1,8 +1,6 @@
 package com.example.pokedex.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -13,6 +11,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pokedex.data.Repository
 import com.example.pokedex.data.database.models.PokedexEntry
@@ -25,19 +25,20 @@ fun PokedexHomeScreen(viewModel: PokedexHomeViewModel = hiltViewModel()) {
 
     LazyColumn(state = scrollState ,modifier = Modifier.fillMaxSize()) {
         // when the last item enters the composition (is visible on the screen) the item number will be
-        itemsIndexed(viewModel.pokedexEntryList) { index: Int, item: PokedexEntry ->
-            if(index == viewModel.pokedexEntryList.count()) {
+        itemsIndexed(viewModel.pokedexEntryList.value) { index: Int, item: PokedexEntry ->
+            if(index == viewModel.pokedexEntryList.value.count()-1) {
                 viewModel.loadPokedexEntries()
             }
-            PokedexEntryRow(pokemonName = item.name)
+            PokedexEntryRow(pokemonName = item.name, pokemonId = item.id)
         }
     }
 }
 
 @Composable
-fun PokedexEntryRow(pokemonName: String) {
-    Row() {
-        Text(text = pokemonName)
+fun PokedexEntryRow(modifier: Modifier = Modifier, pokemonName: String, pokemonId: Int) {
+    Row(modifier = modifier.height(100.dp).fillMaxWidth()) {
+        Text(text = pokemonId.toString())
+        Text(text = pokemonName, fontSize = 24.sp)
     }
 }
 
@@ -63,5 +64,5 @@ fun PreviewPokedexHomeScreen() {
 @Composable
 @Preview(showBackground = true)
 fun PreviewPokedexEntryRow() {
-    PokedexEntryRow(pokemonName = "test")
+    PokedexEntryRow(pokemonName = "test", pokemonId = 1 )
 }

@@ -8,6 +8,7 @@ import com.example.pokedex.util.Response
 import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 import javax.inject.Inject
 
 @ActivityScoped
@@ -20,23 +21,25 @@ class RepositoryImpl @Inject constructor(
     // list is exposed with val pokemonList. new pokemon will be loaded here.
     override suspend fun getPokemonList(page: Int, pageSize: Int): Response<List<PokedexEntry>> {
         return try {
-            val start  = page*pageSize
+            val start  = page*pageSize + 1
             val end = page*pageSize + pageSize
 
             var pokedexList = pokedexDao.getPokedexList(start, end)
 
-            // if not in cache query from the interwebs
+            // if not in cache query from the api
             if(pokedexList.isEmpty()) {
                 val pokedexResults: List<PokedexEntry> =
                     pokedexApi.getPokemons(limit = pageSize, offset =page*pageSize).results.map {
                         it.toPokedex()
                     }
                 pokedexDao.insertAllPokedexEntries(pokedexResults)
+                pokedexList = pokedexDao.getPokedexList(start, end)
             }
 
-            // query from db again. doing this to make sure that if the insert had an error
-            // that would throw an exception before it got to this point.
-            pokedexList = pokedexDao.getPokedexList(start, end)
+            for(pokedexEntry in pokedexList) {
+                Timber.d("id:${pokedexEntry.id} ${pokedexEntry.name} ")
+            }
+
             Response.Success(pokedexList)
         } catch (e: Exception) {
             Response.Error(message = e.message ?: "unknown exception occurred")

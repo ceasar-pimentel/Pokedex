@@ -20,10 +20,10 @@ import javax.inject.Inject
 @HiltViewModel
 class PokedexHomeViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
-    private var currentPage: Int = 1
+    private var currentPage: Int = 0
     private val pageSize: Int = 10
 
-    var pokedexEntryList: List<PokedexEntry> by mutableStateOf(listOf())
+    var pokedexEntryList = mutableStateOf<List<PokedexEntry>>(listOf())
 
     init {
         Timber.d("PokedexHomeViewModel created")
@@ -37,8 +37,10 @@ class PokedexHomeViewModel @Inject constructor(private val repository: Repositor
                     repository.getPokemonList(currentPage, pageSize)) {
                     is Response.Success -> {
                         response.data?.let { data ->
-                            Timber.d(data.count().toString())
-                            pokedexEntryList = pokedexEntryList + data
+                            Timber.d("loading this amount${data.count()} curr page $currentPage")
+                            withContext(Dispatchers.Main) {
+                                pokedexEntryList.value = pokedexEntryList.value + data
+                            }
                             currentPage++
                         }
                     }
